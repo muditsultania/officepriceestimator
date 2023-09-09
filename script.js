@@ -6,12 +6,11 @@ const basePrices = {
     architecture: { Mumbai: 4500, Ahmedabad: 3750, Hyderabad: 4500 ,"Metro City 1" : 4500, "Metro City Outskirts" : 3750, "Metro City 2" :4500 },
   };
   
-  // const propertyFactors = {
-  //   Bungalow: 1.05,
-  //   Apartment: 1,
-  //   Farmhouse: 0.95,
-  //   Villa: 1.07,
-  // };
+  const propertyFactors = {
+    Office: 1,
+    CorporateHouse: 1.3,
+    FactoryOffice: 0.8,
+  };
   
   const stylingFactors = {
     Low: 1,
@@ -41,11 +40,11 @@ const basePrices = {
     "Civil Changes": { Mumbai: 150, Ahmedabad: 50, Hyderabad: 100,"Metro City 1" : 150, "Metro City Outskirts" : 50, "Metro City 2" :100  },
     "Fire Fighting": { Mumbai: 25, Ahmedabad: 25, Hyderabad: 25,"Metro City 1" : 25, "Metro City Outskirts" : 25, "Metro City 2" :25  },
     "Flooring": 	{Mumbai: 350,	Ahmedabad: 200, Hyderabad:	250,"Metro City 1" : 350, "Metro City Outskirts" : 200, "Metro City 2" :250 },
-    "Hvac": 	{Mumbai: 450, Ahmedabad: 400,	Hyderabad: 400,"Metro City 1" : 450, "Metro City Outskirts" : 400, "Metro City 2" :400 },
     "House Keeping": 	{Mumbai: 20, Ahmedabad: 12.5, Hyderabad:	15,"Metro City 1" : 20, "Metro City Outskirts" : 12.5, "Metro City 2" :15 },
     "Pest Control":	{Mumbai: 10, Ahmedabad:	10, Hyderabad:	10,"Metro City 1" : 10, "Metro City Outskirts" : 10, "Metro City 2" :10 },
-    "Surveillance":	{Mumbai: 50, Ahmedabad:	50, Hyderabad:	50,"Metro City 1" : 50, "Metro City Outskirts" : 50, "Metro City 2" :50 }
-  
+    "Surveillance":	{Mumbai: 50, Ahmedabad:	50, Hyderabad:	50,"Metro City 1" : 50, "Metro City Outskirts" : 50, "Metro City 2" :50 },
+    "Split AC": 	{Mumbai: 337.5, Ahmedabad: 300,	Hyderabad: 300,"Metro City 1" : 450, "Metro City Outskirts" : 300, "Metro City 2" :300 },
+    "VRF": {Mumbai: 506.25, Ahmedabad: 450,	Hyderabad: 450,"Metro City 1" : 506.25, "Metro City Outskirts" : 450, "Metro City 2" :450}
     // ...other add-ons
   };
   
@@ -53,7 +52,7 @@ const basePrices = {
   function calculateEstimate() {
     const projectType =  document.querySelector('.button-option-project.button-selected').getAttribute('data-value');
     const city = document.querySelector('.button-option-city.button-selected').getAttribute('data-value');
-    // const propertyType = document.querySelector('.button-option-property.button-selected').getAttribute('data-value');
+    const propertyType = document.querySelector('.button-option-property.button-selected').getAttribute('data-value');
     const styling = document.querySelector('.button-option-styling.button-selected').getAttribute('data-value');
     const ceilingHeight =document.querySelector('.button-option-ceiling.button-selected').getAttribute('data-value');
     const plan =document.querySelector('.button-option-plan.button-selected').getAttribute('data-value');
@@ -62,11 +61,11 @@ const basePrices = {
     const addOnValues = Array.from(addOns).map((addOn) => addOn.value);
   
     const basePrice = basePrices[projectType][city] * carpetArea;
-    // const propertyFactor = propertyFactors[propertyType];
+    const propertyFactor = propertyFactors[propertyType];
     const stylingFactor = stylingFactors[styling];
     const ceilingHeightFactor = ceilingHeightFactors[ceilingHeight];
     const planFactor = planFactors[plan];
-    const combinedFactor = stylingFactor * ceilingHeightFactor * planFactor;
+    const combinedFactor = stylingFactor * ceilingHeightFactor * planFactor* propertyFactor;
   
     let estimatedPrice = basePrice * combinedFactor;
   
@@ -78,7 +77,7 @@ const basePrices = {
     return estimatedPrice;
     document.getElementById('result-project-type').textContent = projectType;
     document.getElementById('result-city').textContent = city;
-    // document.getElementById('result-property-type').textContent = propertyType;
+    document.getElementById('result-property-type').textContent = propertyType;
     document.getElementById('result-styling').textContent = styling;
     document.getElementById('result-ceiling-height').textContent = ceilingHeight;
     document.getElementById('result-plan-type').textContent = plan;
@@ -118,7 +117,7 @@ const basePrices = {
   function gatherUserSelections() {
     const projectType = document.querySelector(".button-option-project.button-selected").dataset.value;
     const city = document.querySelector(".button-option-city.button-selected").dataset.value;
-    // const propertyType = document.querySelector(".button-option-property.button-selected").dataset.value;
+    const propertyType = document.querySelector(".button-option-property.button-selected").dataset.value;
     const styling = document.querySelector(".button-option-styling.button-selected").dataset.value;
     const ceilingHeight = document.querySelector(".button-option-ceiling.button-selected").dataset.value;
     const plan = document.querySelector(".button-option-plan.button-selected").dataset.value;
@@ -133,7 +132,7 @@ const basePrices = {
     return {
         projectType,
         city,
-        // propertyType,
+        propertyType,
         styling,
         ceilingHeight,
         plan,
@@ -151,7 +150,7 @@ const basePrices = {
         <h2>Estimation Results</h2>
         <p><strong>Project Type:</strong> ${selections.projectType}</p>
         <p><strong>City:</strong> ${selections.city}</p>
-
+        <p><strong>Property Type:</strong> ${selections.propertyType}</p>
         <p><strong>Styling:</strong> ${selections.styling}</p>
         <p><strong>Ceiling Height:</strong> ${selections.ceilingHeight}</p>
         <p><strong>Plan Type:</strong> ${selections.plan}</p>
@@ -189,7 +188,7 @@ const basePrices = {
   function updateResultOutput(estimatedPrice, selections) {
       document.getElementById("result-project-type").textContent = selections.projectType;
       document.getElementById("result-city").textContent = selections.city;
-      // document.getElementById("result-property-type").textContent = selections.propertyType;
+      document.getElementById("result-property-type").textContent = selections.propertyType;
       document.getElementById("result-styling").textContent = selections.styling;
       document.getElementById("result-ceiling-height").textContent = selections.ceilingHeight;
       document.getElementById("result-plan-type").textContent = selections.plan;
@@ -199,19 +198,18 @@ const basePrices = {
   
   }
   
-  // ... (rest of the code)
   
-  // // Add event listeners for property type buttons
-  // const propertyTypeButtons = document.querySelectorAll(".button-option-property");
-  // propertyTypeButtons.forEach((button) => {
-  //   button.addEventListener("click", function () {
-  //     // Remove the .button-selected class from all buttons
-  //     propertyTypeButtons.forEach((btn) => btn.classList.remove("button-selected"));
+  // Add event listeners for property type buttons
+  const propertyTypeButtons = document.querySelectorAll(".button-option-property");
+  propertyTypeButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      // Remove the .button-selected class from all buttons
+      propertyTypeButtons.forEach((btn) => btn.classList.remove("button-selected"));
   
-  //     // Add the .button-selected class to the clicked button
-  //     button.classList.add("button-selected");
-  //   });
-  // });
+      // Add the .button-selected class to the clicked button
+      button.classList.add("button-selected");
+    });
+  });
   
   // Add event listeners for city buttons
   const cityButtons = document.querySelectorAll(".button-option-city");
